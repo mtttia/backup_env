@@ -1,13 +1,14 @@
-const { copyFileSync, readdirSync, statSync, } = require('fs')
-const path = require('path')
+const {existsSync, rmSync} = require('fs')
+const fs = require('fs-extra')
 
-copyDir('C:/Users/matti/Desktop/src', 'C:/Users/matti/Desktop/dist')
-
-
-function copyDir(src, dest) {
-  const condition = statSync(src).isDirectory()
-  if (!condition) throw new Error('src not exists')
-  
-  let files = readdirSync(src)
-  console.log(files);
+async function copyDir(pathToCopy, finalPath) {
+  fs.ensureDirSync(pathToCopy)
+  if(existsSync(finalPath))
+  {
+    fs.rmSync(finalPath, { recursive: true, force: true });
+  }
+  fs.ensureDirSync(finalPath)
+  await fs.copy(pathToCopy, finalPath)
 }
+
+module.exports = copyDir

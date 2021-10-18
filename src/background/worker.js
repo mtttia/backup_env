@@ -1,4 +1,5 @@
 const cron = require('node-cron')
+const copyDir = require('./backup')
 const { ipcRenderer } = require('electron')
 
 let i = 0
