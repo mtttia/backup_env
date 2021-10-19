@@ -1,7 +1,15 @@
-const { sayStop } = require('./api')
+const bootstrap = require('bootstrap')
+const Setting = require('./setting')
 
-const btnStop = document.getElementById('btnStop')
+main()
 
-btnStop.addEventListener('click', (e) => {
-    sayStop()
-})
+function main() {
+    if (Setting.firstTime()) {
+        // first application opening
+        var settingModal = new bootstrap.Modal(document.getElementById('settingModal'), {
+            keyboard: false
+        })
+
+        settingModal.show()
+    }
+}
