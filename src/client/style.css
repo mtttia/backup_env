@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'qahiri';
+    src: url('./font/Qahiri-Regular.ttf');
+}
+@font-face {
+    font-family: 'roboto';
+    src: url('./font/Roboto-Regular.ttf');
+}
+
+.roboto{
+  font-family: roboto;
+}
+
+
+.welcome_title{
+  font-family: qahiri;
+  font-size: 80px;
+  color: #006d77;
+}
+
+.btn{
+  box-shadow: 2px 5px 2px #83c5be;
+  transition: all 0.2s ease;
+}
+
+.btn:hover{
+  transform: translate(2px, 5px);
+  box-shadow:none;
+}

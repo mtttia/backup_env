@@ -22,7 +22,7 @@ let mainWindow, workerWindow
 
 const createWindow = () => {  
   mainWindow = new BrowserWindow({
-    minWidth : 695,
+    minWidth : 800,
     minHeight : 300,
     width: 800,
     height: 600,
@@ -42,7 +42,7 @@ const createWindow = () => {
     }
   })
 
-  workerWindow.loadFile(path.join(__dirname, 'background/index.html'))
+  // workerWindow.loadFile(path.join(__dirname, 'background/index.html'))
 
   // mainWindow.webContents.openDevTools();
 };
