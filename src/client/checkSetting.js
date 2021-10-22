@@ -15,6 +15,20 @@ document.getElementById('btnStartConfig').addEventListener('click', () => {
   document.getElementById('recup').classList.add('d-none')
 })
 
+document.getElementById('btnSetting').addEventListener('click', () => {
+  var settingModal = new bootstrap.Modal(document.getElementById('settingModal'), {
+    keyboard: false
+  })
+
+  settingModal.show()
+  // document.getElementById('welcome').classList.add('d-none')
+  document.getElementById('type').classList.remove('d-none')
+  document.getElementById('day').classList.add('d-none')
+  document.getElementById('time').classList.add('d-none')
+  document.getElementById('folder').classList.add('d-none')
+  document.getElementById('recup').classList.add('d-none')
+})
+
 let type = ""
 document.getElementById('type').addEventListener('submit', sendType)
 function sendType(e) {
@@ -26,9 +40,13 @@ function sendType(e) {
 
   if (type != "") {
     //ok 
-    if (type == 'mensile' || type == 'settimanale') {
+    if (type == 'settimanale') {
       document.getElementById('type').classList.add('d-none')
       document.getElementById('day').classList.remove('d-none')
+    }
+    else if (type == 'mensile') {
+      document.getElementById('type').classList.add('d-none')
+      document.getElementById('day_month').classList.remove('d-none')
     }
     else {
       document.getElementById('type').classList.add('d-none')
@@ -44,7 +62,11 @@ function sendType(e) {
 
 document.getElementById('gotoType').addEventListener('click', () => {
   document.getElementById('type').classList.remove('d-none')
-  document.getElementById('day').classList.add('d-none')
+  document.getElementById('day').classList.add('d-none')  
+})
+document.getElementById('gotoType_month').addEventListener('click', () => {
+  document.getElementById('type').classList.remove('d-none')
+  document.getElementById('day_month').classList.add('d-none')
 })
 
 let day = ""
@@ -69,10 +91,51 @@ function sendDay(e) {
   }
 }
 
+let day_month;
+document.getElementById('day_month').addEventListener('submit', sendDayMonth)
+function sendDayMonth(e) {
+  e.preventDefault();
+
+  day_month = document.getElementById('select_month_day').value 
+
+  if (!day_month) {
+    alert('Seleziona il giorno per fare il backup')
+  }
+  else {
+    document.getElementById('day_month').classList.add('d-none')
+    document.getElementById('time').classList.remove('d-none')
+  }
+}
+
+document.getElementById('day').addEventListener('submit', sendDay)
+function sendDay(e) {
+  e.preventDefault();
+
+  day = document.getElementById('lunedi').checked ? 'lunedi' : day
+  day = document.getElementById('martedi').checked ? 'martedi' : day
+  day = document.getElementById('mercoledi').checked ? 'mercoledi' : day
+  day = document.getElementById('giovedi').checked ? 'giovedi' : day
+  day = document.getElementById('venerdi').checked ? 'venerdi' : day
+  day = document.getElementById('sabato').checked ? 'sabato' : day
+  day = document.getElementById('domenica').checked ? 'domenica' : day
+
+  if (day == "") {
+    alert('Seleziona il giorno per fare il backup')
+  }
+  else {
+    document.getElementById('day').classList.add('d-none')
+    document.getElementById('time').classList.remove('d-none')
+  }
+}
+
 document.getElementById('gotoDay').addEventListener('click', () => {
-  if (type != 'giornaliero') {
+  if (type == 'settimanale') {
     document.getElementById('time').classList.add('d-none')
-   document.getElementById('day').classList.remove('d-none')
+    document.getElementById('day').classList.remove('d-none')
+  }
+  else if (type == 'mensile') {
+    document.getElementById('time').classList.add('d-none')
+    document.getElementById('day_month').classList.remove('d-none')
   }
   else {
     document.getElementById('time').classList.add('d-none')
@@ -150,3 +213,9 @@ function makeRecup() {
   document.getElementById('rtime').innerText = `Orario: ${time.hour}:${time.minutes}`
   document.getElementById('rfolder').innerHTML = `Sorgente: ${srcFolder} <br>Destinazione: ${distFolder}`
 }
+
+document.getElementById('gotoFolder').addEventListener('click', () => {
+  document.getElementById('recup').classList.add('d-none')
+  document.getElementById('folder').classList.remove('d-none')
+})
+

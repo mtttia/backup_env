@@ -8,7 +8,11 @@
 }
 
 .roboto{
-  font-family: roboto;
+  font-family: 'roboto';
+}
+
+.qahiri{
+  font-family: 'qahiri';
 }
 
 
@@ -26,4 +30,118 @@
 .btn:hover{
   transform: translate(2px, 5px);
   box-shadow:none;
+}
+
+#status_bar{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 50px;
+  width: 350px;
+  background-color: #EDF6F9;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 30px;
+  font-size: 25px;
+}
+
+#status_bar::after{
+  left: 350px;
+  content: "";
+  position: fixed;
+  top: 0px;
+  width: 0;
+  height: 0;
+  border-top: 0px solid transparent;
+  border-left: 50px solid #EDF6F9;
+  border-bottom: 50px solid transparent;
+}
+
+.status_bar_ok{
+  background-color: #008031 !important;
+  color: white !important;
+  box-shadow: 2px 2px 5px #008031;
+  transition: all 0.5s ease;
+}
+
+.status_bar_ok:hover{
+  box-shadow: 8px 8px 20px #008031;
+}
+
+.status_bar_ok::after{
+  border-left: 50px solid #008031 !important;
+  
+}
+
+.btn-home{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.body{
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: -2;
+  background-image: url('./img/wall.png');
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.menu-icon{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #83c5be;  
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menu-icon:hover{
+  box-shadow: 5px 5px 10px #83c5be;
+  animation-name: animate-menu-icon;
+  animation-duration: 1.3s;
+}
+
+@keyframes animate-menu-icon {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.menu-option{
+  position:fixed;
+  top: 90px;
+  right: -100px;
+  width: 50px;
+  background-color: #83c5be;
+  transition: all 0.4s ease;
+  border-radius: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.menu-option-active{
+  right: 20px !important;
+}
+
+.menu-item{
+  cursor: pointer;
 }

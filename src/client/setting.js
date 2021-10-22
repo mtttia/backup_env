@@ -1,17 +1,26 @@
-const { readFileSync, existsSync } = require('fs')
+const { readFileSync, existsSync, writeFileSync } = require('fs')
 const path = require('path')
 
 const settingPath = path.join(__dirname, 'setting.json')
 
 class Setting{
-    CronPattern; // "* * * * *" -> see documentation here https://www.npmjs.com/package/node-cron
+    CronPattern; // "* * * * *" -> see documentation here https://www.npmjs.com/package/node-cron+ù
+    SrcFolder;
+    DistFolder;
 
-    constructor(cronPattern){
+    constructor(cronPattern, srcFolder, distFolder, save = false){
         this.CronPattern = cronPattern
+        this.SrcFolder = srcFolder
+        this.DistFolder = distFolder
+        if (save)
+            this.save()
     }
 
-    static fromJson(obj){
-        CronPattern = obj.CronPattern
+    static fromJson(obj) {
+        if(obj.CronPattern && obj.SrcFolder && obj.DistFolder)
+            return new Setting(obj.CronPattern, obj.SrcFolder, obj.DistFolder, false)
+        else
+            throw new Error('Object is not a Setting object')
     }
 
     static load(){
@@ -21,6 +30,10 @@ class Setting{
 
     static firstTime(){
         return !existsSync(settingPath)
+    }
+
+    save() {
+        writeFileSync(settingPath, JSON.stringify(this))
     }
 }
 
