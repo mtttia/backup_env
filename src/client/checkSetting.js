@@ -185,8 +185,8 @@ document.getElementById('folder').addEventListener('submit', (e) => {
   document.getElementById('txtSrc').classList.remove('is-invalid')
   document.getElementById('txtDist').classList.remove('is-invalid')
 
-  srcFolder = document.getElementById('txtSrc').value
-  distFolder = document.getElementById('txtDist').value
+  srcFolder = validatePath(document.getElementById('txtSrc').value)
+  distFolder = validatePath(document.getElementById('txtDist').value)
 
   if (srcFolder.trim() != "" && distFolder.trim() != "") {
     makeRecup()
@@ -201,6 +201,14 @@ document.getElementById('folder').addEventListener('submit', (e) => {
     }
   }
 })
+
+function validatePath(s){
+  let arr = Array.from(s)
+  arr.map((val, i) => {
+    return val == "\\" ? '\\\\' : val
+  })
+  return arr.join('')
+}
 
 document.getElementById('gotoTime').addEventListener('click', () => {  
   document.getElementById('folder').classList.add('d-none')

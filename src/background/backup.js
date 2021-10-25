@@ -5,7 +5,7 @@ async function copyDir(pathToCopy, finalPath) {
   fs.ensureDirSync(pathToCopy)
   if(existsSync(finalPath))
   {
-    fs.rmSync(finalPath, { recursive: true, force: true });
+    //rmSync(finalPath, { recursive: true, force: true }) //TODO: give error
   }
   fs.ensureDirSync(finalPath)
   await fs.copy(pathToCopy, finalPath)

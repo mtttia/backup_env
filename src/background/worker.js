@@ -53,7 +53,7 @@ async function cronFunction() {
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.State = 'Errore'
       report.Description = 'Errore durante la copia delle cartelle'//lang: ITA
-      //TODO: ERROR HERE
+      console.log(ex);
     }
     ipcRenderer.send('log', report)
   }
