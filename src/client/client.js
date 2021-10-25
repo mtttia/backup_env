@@ -1,12 +1,19 @@
-
-const Setting = require('./setting')
+const Setting = require('../class/setting')
+const BackupData = require('../class/backupData')
+const { ipcRenderer } = require('electron')
 
 let setting = null
+let backupData = null
 main()
 
-
-
 function main() {
+    //inizializa log
+    if (BackupData.exist()) {
+        backupData = BackupData.load()
+    }
+    else {
+        backupData = BackupData.create()
+    }
     if (Setting.firstTime()) {
         // first application opening
         document.getElementById('welcome').classList.remove('d-none')
@@ -78,8 +85,18 @@ function initializeSetting() {
     //run real app
     document.getElementById('welcome').classList.add('d-none')
     document.getElementById('home').classList.remove('d-none')
+
+    ipcRenderer.send('say-upload-setting', "")
+    ipcRenderer.send('say-start-backup', "")
 }
 
 document.getElementById('btnShowMenu').addEventListener('click', () => {
     document.getElementById('menu-option').classList.toggle('menu-option-active')
+})
+
+//listener
+ipcRenderer.on('log', (event, arg) => {
+    let l = arg
+    console.log(l);
+    backupData.addLog(l, {save:true})
 })

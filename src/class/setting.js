@@ -1,7 +1,7 @@
 const { readFileSync, existsSync, writeFileSync } = require('fs')
 const path = require('path')
 
-const settingPath = path.join(__dirname, 'setting.json')
+const settingPath = path.join(__dirname, '../setting.json')
 
 class Setting{
     CronPattern; // "* * * * *" -> see documentation here https://www.npmjs.com/package/node-cron+ù

@@ -6,17 +6,36 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
-ipcMain.on('say-stop', (event, arg) => {  
-  try {
-    workerWindow.webContents.send('stop-cron', '')
-  } catch (e) {
-    // it shouldn't appened
-  }
+//from mainwindow
+
+ipcMain.on('say-upload-setting', (event, arg) => {
+  workerWindow.webContents.send('upload-setting', '')
+  console.log('upload-setting');
 })
 
-ipcMain.on('print', (event, arg) => {
-  console.log(arg);
+ipcMain.on('say-start-backup', (event, arg) => {
+  workerWindow.webContents.send('start-backup', '')
+  console.log('start-backup');
 })
+
+ipcMain.on('say-stop-backup', (event, arg) => {
+  workerWindow.webContents.send('stop-backup', '')
+})
+
+//from workerwindow
+
+ipcMain.on('error', (event, arg) => {
+  mainWindow.webContents.send('error', ...arg)
+})
+
+ipcMain.on('log', (event, arg) => {
+  mainWindow.webContents.send('log', arg)
+})
+
+ipcMain.on('logger', (event, arg) => {
+  // console.log();
+})
+
 
 let mainWindow, workerWindow
 
@@ -28,21 +47,23 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule : true
+      enableRemoteModule: true,
+      contextIsolation: false
     }
   });
 
   mainWindow.loadFile(path.join(__dirname, 'client/index.html'));
 
   workerWindow = new BrowserWindow({
-    show: false,
+    show: true,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule:true
+      enableRemoteModule: true,
+      contextIsolation: false
     }
   })
 
-  // workerWindow.loadFile(path.join(__dirname, 'background/index.html'))
+  workerWindow.loadFile(path.join(__dirname, 'background/index.html'))
 
   // mainWindow.webContents.openDevTools();
 };
