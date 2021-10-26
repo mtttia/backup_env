@@ -8,7 +8,7 @@ class Log{
   DistFolder;
 
   static isLog(obj) {
-    return obj.Date && obj.StartHour && obj.EndHour && obj.State && obj.Description && obj.SrcFolder && obj.DistFolder
+    return 'Date' in obj && 'StartHour' in obj && 'EndHour' in obj && 'State' in obj && 'Description' in obj && 'SrcFolder' in obj && 'DistFolder' in obj
   }
 }
 

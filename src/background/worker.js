@@ -8,6 +8,7 @@ const Log = require('./../class/log')
 let setting = null
 let task = null
 let running = false
+let pause = false
 
 ipcRenderer.on('upload-setting', (event, arg) => {
   setting = Setting.load()
@@ -19,16 +20,27 @@ ipcRenderer.send('logger', 'logger work')
 ipcRenderer.on('start-backup', (event, arg) => {
   if (task) {
     task.stop()
+    task.removeAllListeners()  
   }
   task = cron.schedule(setting.CronPattern, cronFunction)
+  
   task.start()
-  ipcRenderer.send('logger', 'start task', setting.CronPattern)
+  
   running = true
 })
 
 ipcRenderer.on('stop-backup', (event, arg) => {
   if (task)
     task.stop()
+  pause = false
+})
+
+ipcRenderer.on('status', (event, arg) => {
+  ipcRenderer.send('status-reply', {running:running, pause:pause})
+})
+
+ipcRenderer.on('initial-status', (event, arg) => {
+  ipcRenderer.send('initial-status-reply', {running:running})
 })
 
 async function cronFunction() {  
@@ -37,7 +49,7 @@ async function cronFunction() {
   if (existsSync(setting.SrcFolder) && existsSync(setting.DistFolder)) {
     let report = new Log();
     let today = new Date()
-    report.Date = `${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`
+    report.Date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
     report.DistFolder = setting.DistFolder
     report.SrcFolder = setting.SrcFolder
     report.StartHour = `${today.getHours()}:${today.getMinutes()}`
@@ -52,7 +64,7 @@ async function cronFunction() {
       let now = new Date()
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.State = 'Errore'
-      report.Description = 'Errore durante la copia delle cartelle'//lang: ITA
+      report.Description = 'Errore durante la copia delle cartelle'//lang: ITA      
       console.log(ex);
     }
     ipcRenderer.send('log', report)
@@ -62,7 +74,7 @@ async function cronFunction() {
     ipcRenderer.send('error', 'no-directory')
     let report = new Log();
     let today = new Date()
-    report.Date = `${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`
+    report.Date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
     report.Description = "Cartelle non trovate" //lang: ITA
     report.DistFolder = setting.DistFolder
     report.SrcFolder = setting.SrcFolder

@@ -46,6 +46,11 @@ class BackupData {
       throw new Error('this is not a log')
     }
   }
+
+  upload() {
+    let n = BackupData.load()
+    this.Logs = n.Logs
+  }
 }
 
 module.exports = BackupData

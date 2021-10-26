@@ -1,12 +1,14 @@
 const Setting = require('../class/setting')
 const BackupData = require('../class/backupData')
 const { ipcRenderer } = require('electron')
+const { isLog } = require('../class/log')
 
 let setting = null
 let backupData = null
 main()
 
 function main() {
+    ipcRenderer.send('say-status', '')
     //inizializa log
     if (BackupData.exist()) {
         backupData = BackupData.load()
@@ -20,6 +22,7 @@ function main() {
         document.getElementById('home').classList.add('d-none')
     }
     else {
+        ipcRenderer.send('ask-recup', '')
         setting = Setting.load()
         //popolo setting
         const reverseMapDayOfWeek =  {
@@ -33,7 +36,7 @@ function main() {
         }
         let pattern = setting.CronPattern.split(' ');
         
-        let time = {
+        time = {
             minutes : pattern[0],
             hour : pattern[1]
         }
@@ -57,7 +60,10 @@ function main() {
         document.getElementById('timePicker').value = time.hour + ':' + time.minutes
         document.getElementById('txtSrc').value = setting.SrcFolder;
         document.getElementById('txtDist').value = setting.DistFolder;
+
+        populateStateModal()
     }
+
 }
 
 document.getElementById('btnInizia').addEventListener('click', initializeSetting)
@@ -88,15 +94,75 @@ function initializeSetting() {
 
     ipcRenderer.send('say-upload-setting', "")
     ipcRenderer.send('say-start-backup', "")
+
+    populateStateModal()
 }
 
 document.getElementById('btnShowMenu').addEventListener('click', () => {
     document.getElementById('menu-option').classList.toggle('menu-option-active')
 })
 
-//listener
-ipcRenderer.on('log', (event, arg) => {
-    let l = arg
-    console.log(l);
-    backupData.addLog(l, {save:true})
+ipcRenderer.on('status', (event, arg) => {    
+    if (arg.running == true && arg.pause == false) {
+        //all ok
+        document.getElementById('status_bar').setAttribute('class', 'status_bar_ok')
+        document.getElementById('status_bar_text').innerText = "Stato: OK"
+    }
+    else if(arg.running == false){
+        //is an error
+        document.getElementById('status_bar').setAttribute('class', 'status_bar_error')
+        document.getElementById('status_bar_text').innerText = "Errore"
+    }
+    else {
+        //pause == true
+        document.getElementById('status_bar').setAttribute('class', 'status_bar_pause')
+        document.getElementById('status_bar_text').innerText = "In pausa"
+    }
 })
+
+ipcRenderer.on('config', (event, arg) => {
+    if (!arg.running) {
+        ipcRenderer.send('say-upload-setting', "")
+        ipcRenderer.send('say-start-backup', "")
+        ipcRenderer.send('say-status', '')
+    }
+})
+
+ipcRenderer.on('log', (event, arg) => {
+    backupData.upload()
+    populateStateModal()
+})
+
+function populateStateModal() {
+    //setting data
+    document.getElementById('sm-type').innerText = "Tipo: " + type
+    let myday = day || day_month ? day || day_month : "tutti"
+    document.getElementById('sm-day').innerText = "Giorno: " + myday
+    document.getElementById('sm-time').innerText = `Orario: ${time.hour}:${time.minutes}`
+    document.getElementById('sm-folder').innerHTML = `Sorgente: ${setting.SrcFolder} <br>Destinazione: ${setting.DistFolder}`
+
+    //logs data
+    let html = ''
+    let id = 0
+    for (let l of backupData.Logs) {
+        html += `
+<div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#log${id}" aria-expanded="true" aria-controls="collapseOne">
+            ${l.Date}, inizio: ${l.StartHour} - fine: ${l.EndHour}
+        </button>
+    </h2>
+    <div id="log${id}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#sm-accordationLog">
+        <div class="accordion-body">
+            Stato: ${l.State}<br>
+            ${l.Description ? 'Description: ' + l.Description + '<br>' : ''}
+            Source: ${l.SrcFolder}<br>
+            Destinazione: ${l.DistFolder}
+        </div>
+    </div>
+</div>`
+        id++
+    }
+
+    document.getElementById('sm-accordationLog').innerHTML = html
+}

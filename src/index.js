@@ -1,10 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const BackupData = require('./class/backupData')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
+
+//backupData
+let backupData = BackupData.exist() ? BackupData.load() : BackupData.create()
 
 //from mainwindow
 
@@ -22,6 +26,14 @@ ipcMain.on('say-stop-backup', (event, arg) => {
   workerWindow.webContents.send('stop-backup', '')
 })
 
+ipcMain.on('say-status', (event, arg) => {
+  workerWindow.webContents.send('status', '')
+})
+
+ipcMain.on('ask-recup', (event, arg) => {
+  workerWindow.webContents.send('initial-status', '')
+})
+
 //from workerwindow
 
 ipcMain.on('error', (event, arg) => {
@@ -29,11 +41,16 @@ ipcMain.on('error', (event, arg) => {
 })
 
 ipcMain.on('log', (event, arg) => {
+  saveLog(arg)
   mainWindow.webContents.send('log', arg)
 })
 
-ipcMain.on('logger', (event, arg) => {
-  // console.log();
+ipcMain.on('status-reply', (event, arg) => {
+  mainWindow.webContents.send('status', arg)
+})
+
+ipcMain.on('initial-status-reply', (event, arg) => {
+  mainWindow.webContents.send('config', arg)
 })
 
 
@@ -55,7 +72,7 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'client/index.html'));
 
   workerWindow = new BrowserWindow({
-    show: true,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -81,3 +98,22 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+
+}
+
+function saveLog(log) {
+  backupData.addLog(log, {save:true})
+}
