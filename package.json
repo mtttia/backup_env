@@ -20,7 +20,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "src/src/icon/icon"
+        "icon": "src/client/img/giornatadellamemoria"
       },
       "makers": [
         {
