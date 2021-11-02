@@ -20,8 +20,12 @@ ipcMain.on('say-start-backup', (event, arg) => {
   workerWindow.webContents.send('start-backup', '')
 })
 
-ipcMain.on('say-stop-backup', (event, arg) => {
-  workerWindow.webContents.send('stop-backup', '')
+ipcMain.on('say-pause-backup', (event, arg) => {
+  workerWindow.webContents.send('pause-backup', '')
+})
+
+ipcMain.on('say-resume-backup', (event, arg) => {
+  workerWindow.webContents.send('resume-backup', '')
 })
 
 ipcMain.on('say-status', (event, arg) => {
@@ -32,10 +36,18 @@ ipcMain.on('ask-recup', (event, arg) => {
   workerWindow.webContents.send('initial-status', '')
 })
 
+ipcMain.on('say-new-backup', (event, arg) => {
+  workerWindow.webContents.send('new-backup', arg)
+})
+
 //from workerwindow
 
 ipcMain.on('error', (event, arg) => {
   mainWindow.webContents.send('error', ...arg)
+})
+
+ipcMain.on('folder-error', (event, arg) => {  
+  showFolderError()
 })
 
 ipcMain.on('log', (event, arg) => {
@@ -51,8 +63,12 @@ ipcMain.on('initial-status-reply', (event, arg) => {
   mainWindow.webContents.send('config', arg)
 })
 
+ipcMain.on('new-backup-end', (event, arg) => {
+  mainWindow.webContents.send('new-backup-end', arg)
+})
 
-let mainWindow = null, workerWindow = null
+
+let mainWindow = null, workerWindow = null, folderErrorWindow = null
 let mainClosed = true
 
 const createWindow = () => {  
@@ -91,6 +107,22 @@ const createWorkerWindows = () => {
   })
 
   workerWindow.loadFile(path.join(__dirname, 'background/index.html'))
+}
+
+const createFolderErrorWindows = () => {
+  folderErrorWindow = new BrowserWindow({
+    minWidth : 550,
+    minHeight : 300,
+    width: 550,
+    height: 300,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false
+    }
+  })
+
+  folderErrorWindow.loadFile(path.join(__dirname, 'client/folderError.html'))
 }
 
 const gotTheLock   = app.requestSingleInstanceLock()
@@ -134,7 +166,13 @@ try{
   console.log(ex);
 }
 
-
+function showFolderError() {
+  if (folderErrorWindow) {
+    if (folderErrorWindow.isMinimized()) folderErrorWindow.restore()
+    folderErrorWindow.focus()
+  }
+  createFolderErrorWindows()
+}
 
 function saveLog(log) {
   backupData.addLog(log, {save:true})

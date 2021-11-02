@@ -15,7 +15,6 @@ ipcRenderer.on('upload-setting', (event, arg) => {
   ipcRenderer.send('logger', setting)
 })
 
-ipcRenderer.send('logger', 'logger work')
 
 ipcRenderer.on('start-backup', (event, arg) => {
   if (task) {
@@ -29,9 +28,11 @@ ipcRenderer.on('start-backup', (event, arg) => {
   running = true
 })
 
-ipcRenderer.on('stop-backup', (event, arg) => {
-  if (task)
-    task.stop()
+ipcRenderer.on('pause-backup', (event, arg) => {  
+  pause = true
+})
+
+ipcRenderer.on('resume-backup', (event, arg) => {
   pause = false
 })
 
@@ -43,7 +44,51 @@ ipcRenderer.on('initial-status', (event, arg) => {
   ipcRenderer.send('initial-status-reply', {running:running})
 })
 
+ipcRenderer.on('new-backup', async (event, arg) => {  
+  if (existsSync(arg.SrcFolder) && existsSync(arg.DistFolder)) {
+    let report = new Log();
+    let today = new Date()
+    report.Date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+    report.DistFolder = arg.DistFolder
+    report.SrcFolder = arg.SrcFolder
+    report.StartHour = `${today.getHours()}:${today.getMinutes()}`
+    try {      
+      await copyDir(arg.SrcFolder, arg.DistFolder)
+      let now = new Date()
+      report.EndHour = `${now.getHours()}:${now.getMinutes()}`
+      report.Description = "" 
+      report.State = 'OK'
+    } catch (ex)
+    {
+      let now = new Date()
+      report.EndHour = `${now.getHours()}:${now.getMinutes()}`
+      report.State = 'Errore'
+      report.Description = 'Errore durante la copia delle cartelle'//lang: ITA      
+      console.log(ex);
+    }
+    ipcRenderer.send('log', report)
+    ipcRenderer.send('new-backup-end', report)
+  }
+  else {
+    //send error
+    ipcRenderer.send('error', 'no-directory')
+    let report = new Log();
+    let today = new Date()
+    report.Date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+    report.Description = "Cartelle non trovate" //lang: ITA
+    report.DistFolder = arg.DistFolder
+    report.SrcFolder = arg.SrcFolder
+    report.State = 'Errore'
+    report.StartHour = `${today.getHours()}:${today.getMinutes()}`
+    report.EndHour = `${today.getHours()}:${today.getMinutes()}`
+    ipcRenderer.send('log', report)
+    ipcRenderer.send('new-backup-end', report)
+  }
+})
+
 async function cronFunction() {  
+  if (pause) return
+  
   ipcRenderer.send('logger', 'cron jobs works')
   console.log(setting.SrcFolder,setting.DistFolder);
   if (existsSync(setting.SrcFolder) && existsSync(setting.DistFolder)) {
@@ -65,13 +110,14 @@ async function cronFunction() {
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.State = 'Errore'
       report.Description = 'Errore durante la copia delle cartelle'//lang: ITA      
-      console.log(ex);
+      ipcRenderer.send('error', ex)
     }
     ipcRenderer.send('log', report)
   }
   else {
     //send error
     ipcRenderer.send('error', 'no-directory')
+    ipcRenderer.send('folder-error', '')
     let report = new Log();
     let today = new Date()
     report.Date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`

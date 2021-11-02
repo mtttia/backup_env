@@ -8,6 +8,12 @@ class BackupData {
   Logs;
   constructor(logs, save = false) {
     this.Logs = logs
+    this.Logs.sort((el1, el2) => {
+      let date1 = new Date(getUnixString(el1.Date, el1.StartHour))
+      let date2 = new Date(getUnixString(el2.Date, el2.StartHour))
+
+      return date1 < date2 ? 1 : date1 == date2 ? 0 : -1
+    })
     if(save) this.save()
   }
 
@@ -51,6 +57,15 @@ class BackupData {
     let n = BackupData.load()
     this.Logs = n.Logs
   }
+}
+
+function getUnixString(date, time) {
+  date = date.split('/')
+  //0 -> day, 1 -> month, 2 -> year
+  time = time.split(':')
+  //0 -> hour, 1 -> minutes
+
+  return `${date[2]}-${date[1]}-${date[0]}T${time[0]}:${time[1]}:00`
 }
 
 module.exports = BackupData

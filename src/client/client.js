@@ -1,10 +1,10 @@
 const Setting = require('../class/setting')
 const BackupData = require('../class/backupData')
 const { ipcRenderer } = require('electron')
-const { isLog } = require('../class/log')
 
 let setting = null
 let backupData = null
+let backupInPause = false
 main()
 
 function main() {
@@ -94,6 +94,7 @@ function initializeSetting() {
 
     ipcRenderer.send('say-upload-setting', "")
     ipcRenderer.send('say-start-backup', "")
+    ipcRenderer.send('say-status', '')
 
     populateStateModal()
 }
@@ -103,6 +104,8 @@ document.getElementById('btnShowMenu').addEventListener('click', () => {
 })
 
 ipcRenderer.on('status', (event, arg) => {    
+    backupInPause = arg.pause
+    togglePauseIcon()
     if (arg.running == true && arg.pause == false) {
         //all ok
         document.getElementById('status_bar').setAttribute('class', 'status_bar_ok')
@@ -148,7 +151,7 @@ function populateStateModal() {
         html += `
 <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#log${id}" aria-expanded="true" aria-controls="collapseOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#log${id}" aria-expanded="false" aria-controls="collapseOne">
             ${l.Date}, inizio: ${l.StartHour} - fine: ${l.EndHour}
         </button>
     </h2>
@@ -165,4 +168,75 @@ function populateStateModal() {
     }
 
     document.getElementById('sm-accordationLog').innerHTML = html
+}
+
+
+document.getElementById('mb-form').addEventListener('click', (e) => {
+    e.preventDefault()
+
+    let source = document.getElementById('mb-source').value
+    let destination = document.getElementById('mb-destination').value
+
+    if (source.trim() && destination.trim()) {
+        ipcRenderer.send('say-new-backup', {
+            SrcFolder: source,
+            DistFolder: destination
+        })
+        document.getElementById('mb-after').classList.remove('d-none')
+    }
+    else {
+        if (!source.trim()) {
+            document.getElementById('mb-source').classList.add('is-invalid')
+        }
+        else if (!destination.trim()) {
+            document.getElementById('mb-destination').classList.add('is-invalid')
+        }
+    }
+})
+
+document.getElementById('mb-browse-source').addEventListener('click', async () => {
+    let src = await dialog.showOpenDialog({ properties: ['openDirectory'] }) || ""
+    document.getElementById('mb-source').value = src.filePaths[0]
+})
+
+document.getElementById('mb-browse-destination').addEventListener('click', async () => {
+    let dist = await dialog.showOpenDialog({ properties: ['openDirectory'] }) || ""
+    document.getElementById('mb-destination').value = dist.filePaths[0]
+})
+
+ipcRenderer.on('new-backup-end', (event, arg) => {
+    document.getElementById('mb-after-report').classList.remove('d-none')
+    document.getElementById('mb-after').classList.add('d-none')
+
+    document.getElementById('mb-after-report').innerHTML = `
+    <h2>Report</h2><br>
+    <p>Data = ${arg.Date}</p>
+    <p>Ora inizio = ${arg.StartHour}</p>
+    <p>Ora fine = ${arg.EndHour}</p>
+    <p>Stato = ${arg.State}</p>
+    <p>Descrizione = ${arg.Description}</p>
+    <p>Source = ${arg.SrcFolder}</p>
+    <p>Destinazione = ${arg.DistFolder}</p>
+    `
+})
+
+document.getElementById('btnPause').addEventListener('click', () => {
+    if (backupInPause) ipcRenderer.send('say-resume-backup', '')
+    else ipcRenderer.send('say-pause-backup', '')
+    backupInPause = !backupInPause
+    togglePauseIcon()
+    ipcRenderer.send('say-status', '')
+})
+
+function togglePauseIcon() {
+    if (backupInPause) {
+        document.getElementById('btnPause').setAttribute('title', 'pausa')
+        document.getElementById('icon-pause').classList.add('d-none')
+        document.getElementById('icon-play').classList.remove('d-none')
+    }
+    else {
+        document.getElementById('btnPause').setAttribute('title', 'riattiva')
+        document.getElementById('icon-pause').classList.remove('d-none')
+        document.getElementById('icon-play').classList.add('d-none')
+    }
 }

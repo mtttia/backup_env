@@ -194,7 +194,7 @@ document.getElementById('folder').addEventListener('submit', (e) => {
     document.getElementById('recup').classList.remove('d-none')
   } else {
     if (srcFolder.trim() == "") {
-      document.getElementById('txtSrc').classList.add('is-invalid')      
+      document.getElementById('txtSrc').classList.add('is-invalid')
     }
     if (distFolder.trim() == "") {
       document.getElementById('txtDist').classList.add('is-invalid')      

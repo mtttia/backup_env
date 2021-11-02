@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="./../../node_modules/material-components-web/dist/material-components-web.min.css">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./override_boostrap.css">
   <title>Document</title>
 </head>
 
@@ -26,12 +27,26 @@
         </svg>
       </div>
       <div class="menu-option" id="menu-option">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" data-bs-toggle="tooltip" data-bs-placement="left" title="Impostazioni" id="btnSetting" width="18" height="18" fill="currentColor"
-            class="menu-item bi bi-gear-wide-connected" viewBox="0 0 16 16">
-            <path
-              d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
-          </svg>          
+          <div class="menu-item" title="Impostazioni" id="btnSetting" data-bs-toggle="tooltip" data-bs-placement="left">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+              class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+              <path
+                d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
+            </svg>
+          </div>
+          <br>
+          <div class="menu-item" id="btnPause" title="pause" data-bs-toggle="tooltip" data-bs-placement="left">
+            <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pause-fill"
+               viewBox="0 0 16 16">
+              <path
+                d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z" />
+            </svg>
+            <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-play-fill"
+              viewBox="0 0 16 16">
+              <path
+                d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+            </svg>
+          </div>          
           
           <br>          
       </div>
@@ -45,7 +60,7 @@
           <div class="offset-2">
             <div>
               <button id="" class="btn btn-primary btn-home roboto" data-bs-toggle="modal" data-bs-target="#stateModal">Stato</button>
-              <button id="" class="btn btn-primary btn-home roboto" style="margin-left: 20px;">Backup</button>
+              <button id="" class="btn btn-primary btn-home roboto" style="margin-left: 20px;" data-bs-toggle="modal" data-bs-target="#ModalBackup">Backup</button>
             </div>
           </div>
         </div>
@@ -54,11 +69,6 @@
         </div>
       </div>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="position:fixed;bottom:0px;z-index:-2;">
-      <path fill="#83c5be" fill-opacity="1"
-        d="M0,320L43.6,160L87.3,256L130.9,320L174.5,128L218.2,32L261.8,320L305.5,64L349.1,128L392.7,128L436.4,224L480,320L523.6,64L567.3,224L610.9,96L654.5,160L698.2,128L741.8,288L785.5,96L829.1,192L872.7,160L916.4,224L960,192L1003.6,224L1047.3,32L1090.9,256L1134.5,192L1178.2,256L1221.8,256L1265.5,32L1309.1,64L1352.7,288L1396.4,192L1440,256L1440,320L1396.4,320L1352.7,320L1309.1,320L1265.5,320L1221.8,320L1178.2,320L1134.5,320L1090.9,320L1047.3,320L1003.6,320L960,320L916.4,320L872.7,320L829.1,320L785.5,320L741.8,320L698.2,320L654.5,320L610.9,320L567.3,320L523.6,320L480,320L436.4,320L392.7,320L349.1,320L305.5,320L261.8,320L218.2,320L174.5,320L130.9,320L87.3,320L43.6,320L0,320Z">
-      </path>
-    </svg>
   </div>
   
   <!-- Modal -->
@@ -67,7 +77,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="stateModalLabel">Stato</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -102,7 +112,64 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Chiudi</button>          
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Chiudi</button>          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <!-- ModalBackup -->
+  <div class="modal fade" id="ModalBackup" tabindex="-1" aria-labelledby="ModalBackupLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalBackupLabel">Esegui un backup</h5>
+          <button type="button" class="btn-close btn btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="row">
+              <div class="col-9">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="mb-source">
+                  <label for="floatingInput">Cartella di partenza</label>
+                </div>
+              </div>
+              <div class="col-3">
+                <button id="mb-browse-source" class="btn btn-primary float-end">Browse</button>
+              </div>
+            </div>
+          
+            <div class="row">
+              <div class="col-9">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="mb-destination">
+                  <label for="floatingInput">Cartella di destinazione</label>
+                </div>
+              </div>
+              <div class="col-3">
+                <button id="mb-browse-destination" class="btn btn-primary float-end">Browse</button>
+              </div>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" id="mb-form" class="btn btn-primary float-end">Inizia backup</button>
+            </div>
+          </div>
+          <div id="mb-after" class="d-none">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div id="mb-after-report" class="d-none">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Chiudi</button>
         </div>
       </div>
     </div>
@@ -111,11 +178,8 @@
 
 
 
-  <div>
-    <div id="welcome" class="welcome d-none" style="margin-top: 100px;">      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="position:fixed;top:0px;z-index:-2;">
-        <path fill="#83c5be" fill-opacity="1" d="M0,160L1440,288L1440,0L0,0Z"></path>
-      </svg>
+  <div style="height: 100%;">
+    <div id="welcome" class="welcome d-none" style="height: 100%; padding-top: 100px;">      
       <div class="container">
         <div class="row">
           <div class="col-md-6">
@@ -130,11 +194,6 @@
           </div>
         </div>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="position:fixed;bottom:0px;z-index:-2;">
-        <path fill="#83c5be" fill-opacity="1"
-          d="M0,160L6.7,160C13.3,160,27,160,40,154.7C53.3,149,67,139,80,138.7C93.3,139,107,149,120,144C133.3,139,147,117,160,96C173.3,75,187,53,200,53.3C213.3,53,227,75,240,85.3C253.3,96,267,96,280,117.3C293.3,139,307,181,320,197.3C333.3,213,347,203,360,197.3C373.3,192,387,192,400,197.3C413.3,203,427,213,440,197.3C453.3,181,467,139,480,128C493.3,117,507,139,520,133.3C533.3,128,547,96,560,112C573.3,128,587,192,600,224C613.3,256,627,256,640,256C653.3,256,667,256,680,240C693.3,224,707,192,720,165.3C733.3,139,747,117,760,117.3C773.3,117,787,139,800,122.7C813.3,107,827,53,840,42.7C853.3,32,867,64,880,80C893.3,96,907,96,920,85.3C933.3,75,947,53,960,42.7C973.3,32,987,32,1000,64C1013.3,96,1027,160,1040,160C1053.3,160,1067,96,1080,106.7C1093.3,117,1107,203,1120,224C1133.3,245,1147,203,1160,192C1173.3,181,1187,203,1200,186.7C1213.3,171,1227,117,1240,122.7C1253.3,128,1267,192,1280,234.7C1293.3,277,1307,299,1320,304C1333.3,309,1347,299,1360,293.3C1373.3,288,1387,288,1400,288C1413.3,288,1427,288,1433,288L1440,288L1440,320L1433.3,320C1426.7,320,1413,320,1400,320C1386.7,320,1373,320,1360,320C1346.7,320,1333,320,1320,320C1306.7,320,1293,320,1280,320C1266.7,320,1253,320,1240,320C1226.7,320,1213,320,1200,320C1186.7,320,1173,320,1160,320C1146.7,320,1133,320,1120,320C1106.7,320,1093,320,1080,320C1066.7,320,1053,320,1040,320C1026.7,320,1013,320,1000,320C986.7,320,973,320,960,320C946.7,320,933,320,920,320C906.7,320,893,320,880,320C866.7,320,853,320,840,320C826.7,320,813,320,800,320C786.7,320,773,320,760,320C746.7,320,733,320,720,320C706.7,320,693,320,680,320C666.7,320,653,320,640,320C626.7,320,613,320,600,320C586.7,320,573,320,560,320C546.7,320,533,320,520,320C506.7,320,493,320,480,320C466.7,320,453,320,440,320C426.7,320,413,320,400,320C386.7,320,373,320,360,320C346.7,320,333,320,320,320C306.7,320,293,320,280,320C266.7,320,253,320,240,320C226.7,320,213,320,200,320C186.7,320,173,320,160,320C146.7,320,133,320,120,320C106.7,320,93,320,80,320C66.7,320,53,320,40,320C26.7,320,13,320,7,320L0,320Z">
-        </path>
-      </svg>
     </div>
   </div>
 
@@ -147,7 +206,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Impostazioni</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">          
 
@@ -295,7 +354,7 @@
                 <input type="text" class="form-control" id="txtSrc">
               </div>
               <div class="col-3">
-                <button class="btn btn-primary" id="browseSrc">Browse</button>
+                <button class="btn btn-primary float-end" id="browseSrc">Browse</button>
               </div>
               <p class="text-muted">C:/User/</p>
             </div>
@@ -307,7 +366,7 @@
                 <input type="text" class="form-control" id="txtDist">
               </div>
               <div class="col-3">
-                <button class="btn btn-primary" id="browseDist">Browse</button>
+                <button class="btn btn-primary float-end" id="browseDist">Browse</button>
               </div>
               <p class="text-muted">E:/backup</p>
             </div>
