@@ -103,7 +103,8 @@ document.getElementById('btnShowMenu').addEventListener('click', () => {
     document.getElementById('menu-option').classList.toggle('menu-option-active')
 })
 
-ipcRenderer.on('status', (event, arg) => {    
+ipcRenderer.on('status', (event, arg) => {
+    document.getElementById('btn-restart-on-status').classList.add('d-none')
     backupInPause = arg.pause
     togglePauseIcon()
     if (arg.running == true && arg.pause == false) {
@@ -120,6 +121,7 @@ ipcRenderer.on('status', (event, arg) => {
         //pause == true
         document.getElementById('status_bar').setAttribute('class', 'status_bar_pause')
         document.getElementById('status_bar_text').innerText = "In pausa"
+        document.getElementById('btn-restart-on-status').classList.remove('d-none')
     }
 })
 
@@ -230,13 +232,19 @@ document.getElementById('btnPause').addEventListener('click', () => {
 
 function togglePauseIcon() {
     if (backupInPause) {
-        document.getElementById('btnPause').setAttribute('title', 'pausa')
+        document.getElementById('btnPause').setAttribute('title', 'riattiva')
         document.getElementById('icon-pause').classList.add('d-none')
         document.getElementById('icon-play').classList.remove('d-none')
     }
     else {
-        document.getElementById('btnPause').setAttribute('title', 'riattiva')
+        document.getElementById('btnPause').setAttribute('title', 'pausa')
         document.getElementById('icon-pause').classList.remove('d-none')
         document.getElementById('icon-play').classList.add('d-none')
     }
 }
+
+document.getElementById('btn-restart-on-status').addEventListener('click', ()=>{
+    if (backupInPause) ipcRenderer.send('say-resume-backup', '')
+    backupInPause = false
+    ipcRenderer.send('say-status', '')
+})

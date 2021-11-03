@@ -73,7 +73,8 @@ let mainClosed = true
 
 const createWindow = () => {  
   createMainWindows()
-  createWorkerWindows()  
+  createWorkerWindows()
+  createFolderErrorWindows() //TODO: just for try, DELETE IT 
 };
 
 const createMainWindows = () => {

@@ -12,12 +12,42 @@
 </head>
 
 <body class="roboto">
-  There have been a folder error
+  <div class="container">
+    <div class="card" style="width: 100%;">
+      <div class="card-body">
+        <h5 class="card-title">Errore</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Le cartelle non sono state trovate</h6>
+        <div class="card-text">
+          <div class="row">
+            <div class="row">
+              <div class="col-9">
+                <input type="text" class="form-control" id="txtSrc">
+              </div>
+              <div class="col-3">
+                <button class="btn btn-primary float-end" id="browseSrc">Browse</button>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 15px;">
+            <div class="row">
+              <div class="col-9">
+                <input type="text" class="form-control" id="txtDist">
+              </div>
+              <div class="col-3">
+                <button class="btn btn-primary float-end" id="browseDist">Browse</button>
+              </div>
+            </div>
+          </div>
+        <div class="float-end mt-2">          
+          <button class="btn ">Apri app</button>
+          <button class="btn ">Salva modifiche</button>
+          <button class="btn ">Riprova</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  
-  <script src="./checkSetting.js"></script>
-  <script src="./client.js"></script>
-
+  <script src="./folderError.js"></script>
 </body>
 
 </html>
