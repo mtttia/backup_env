@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./../../node_modules/bootstrap/dist/css/bootstrap.min.css" />  
   <link rel="stylesheet" href="./override_boostrap.css">
-  <title>Document</title>
+  <title>Errore nella ricerca delle cartelle</title>
 </head>
 
 <body class="roboto">
@@ -38,10 +38,16 @@
               </div>
             </div>
           </div>
+          <div id="report-loading" class="d-none">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>            
+          </div>
+          <div id="report" class="d-none"></div>
         <div class="float-end mt-2">          
-          <button class="btn ">Apri app</button>
-          <button class="btn ">Salva modifiche</button>
-          <button class="btn ">Riprova</button>
+          <button class="btn " id="btn-open-app">Apri app</button>
+          <button class="btn " id="btn-save-change">Salva modifiche</button>
+          <button class="btn " id="btn-retray">Riprova</button>
         </div>
       </div>
     </div>

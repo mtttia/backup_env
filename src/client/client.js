@@ -9,7 +9,6 @@ main()
 
 function main() {
     ipcRenderer.send('say-status', '')
-    //inizializa log
     if (BackupData.exist()) {
         backupData = BackupData.load()
     }
@@ -17,53 +16,55 @@ function main() {
         backupData = BackupData.create()
     }
     if (Setting.firstTime()) {
-        // first application opening
         document.getElementById('welcome').classList.remove('d-none')
         document.getElementById('home').classList.add('d-none')
     }
     else {
-        ipcRenderer.send('ask-recup', '')
-        setting = Setting.load()
-        //popolo setting
-        const reverseMapDayOfWeek =  {
-            1: 'lunedi',
-            2: 'martedi',
-            3: 'mercoledi',
-            4: 'giovedi',
-            5: 'venerdi',
-            6: 'sabato',
-            7: 'domenica'
-        }
-        let pattern = setting.CronPattern.split(' ');
-        
-        time = {
-            minutes : pattern[0],
-            hour : pattern[1]
-        }
-        if (pattern[2] != '*') {
-            day_month = pattern[2]
-            type = 'mensile'
-        }
-        if (pattern[4] != '*') {
-            day = reverseMapDayOfWeek[pattern[4]]
-            type = 'settimanale'
-        }
-        if (type != 'mensile' && type != 'settimanale')
-            type = 'giornaliero'        
-        document.getElementById(type).checked = true
-        if (type == 'settimanale') {
-            document.getElementById(day).checked = true
-        }
-        if (type == 'mensile') {
-            document.getElementById('select_month_day').value = day_month
-        }
-        document.getElementById('timePicker').value = time.hour + ':' + time.minutes
-        document.getElementById('txtSrc').value = setting.SrcFolder;
-        document.getElementById('txtDist').value = setting.DistFolder;
-
-        populateStateModal()
+        loadSetting()
     }
+}
 
+function loadSetting() {
+    ipcRenderer.send('ask-recup', '')
+    setting = Setting.load()
+    //popolo setting
+    const reverseMapDayOfWeek =  {
+        1: 'lunedi',
+        2: 'martedi',
+        3: 'mercoledi',
+        4: 'giovedi',
+        5: 'venerdi',
+        6: 'sabato',
+        7: 'domenica'
+    }
+    let pattern = setting.CronPattern.split(' ');
+    
+    time = {
+        minutes : pattern[0],
+        hour : pattern[1]
+    }
+    if (pattern[2] != '*') {
+        day_month = pattern[2]
+        type = 'mensile'
+    }
+    if (pattern[4] != '*') {
+        day = reverseMapDayOfWeek[pattern[4]]
+        type = 'settimanale'
+    }
+    if (type != 'mensile' && type != 'settimanale')
+        type = 'giornaliero'        
+    document.getElementById(type).checked = true
+    if (type == 'settimanale') {
+        document.getElementById(day).checked = true
+    }
+    if (type == 'mensile') {
+        document.getElementById('select_month_day').value = day_month
+    }
+    document.getElementById('timePicker').value = time.hour + ':' + time.minutes
+    document.getElementById('txtSrc').value = setting.SrcFolder;
+    document.getElementById('txtDist').value = setting.DistFolder;
+
+    populateStateModal()
 }
 
 document.getElementById('btnInizia').addEventListener('click', initializeSetting)
@@ -247,4 +248,8 @@ document.getElementById('btn-restart-on-status').addEventListener('click', ()=>{
     if (backupInPause) ipcRenderer.send('say-resume-backup', '')
     backupInPause = false
     ipcRenderer.send('say-status', '')
+})
+
+ipcRenderer.on('upload-setting', (event, arg) => {
+    loadSetting()
 })

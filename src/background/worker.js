@@ -45,6 +45,13 @@ ipcRenderer.on('initial-status', (event, arg) => {
 })
 
 ipcRenderer.on('new-backup', async (event, arg) => {  
+  let report = await backup(arg)
+  ipcRenderer.send('log', report)
+  ipcRenderer.send('new-backup-end', report)
+})
+
+async function backup(arg) {
+  ipcRenderer.send('generic-error', '')
   if (existsSync(arg.SrcFolder) && existsSync(arg.DistFolder)) {
     let report = new Log();
     let today = new Date()
@@ -64,10 +71,11 @@ ipcRenderer.on('new-backup', async (event, arg) => {
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.State = 'Errore'
       report.Description = 'Errore durante la copia delle cartelle'//lang: ITA      
+      ipcRenderer.send('generic-error', '')
       console.log(ex);
     }
-    ipcRenderer.send('log', report)
-    ipcRenderer.send('new-backup-end', report)
+    return report
+    
   }
   else {
     //send error
@@ -81,10 +89,9 @@ ipcRenderer.on('new-backup', async (event, arg) => {
     report.State = 'Errore'
     report.StartHour = `${today.getHours()}:${today.getMinutes()}`
     report.EndHour = `${today.getHours()}:${today.getMinutes()}`
-    ipcRenderer.send('log', report)
-    ipcRenderer.send('new-backup-end', report)
+    return report
   }
-})
+}
 
 async function cronFunction() {  
   if (pause) return
@@ -128,6 +135,15 @@ async function cronFunction() {
     report.StartHour = `${today.getHours()}:${today.getMinutes()}`
     report.EndHour = `${today.getHours()}:${today.getMinutes()}`
     ipcRenderer.send('log',report)
-  }
-  
+  }  
 }
+
+ipcRenderer.on('retray-backup', async (event, arg) => {
+  setting = Setting.load()
+  let report = await backup({
+    SrcFolder: setting.SrcFolder,
+    DistFolder: setting.DistFolder
+  })
+  ipcRenderer.send('log', report)
+  ipcRenderer.send('retray-backup-log', report)
+})

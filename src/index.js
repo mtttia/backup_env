@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const BackupData = require('./class/backupData')
 
@@ -13,36 +13,44 @@ let backupData = BackupData.exist() ? BackupData.load() : BackupData.create()
 //from mainwindow
 
 ipcMain.on('say-upload-setting', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('upload-setting', '')
 })
 
 ipcMain.on('say-start-backup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('start-backup', '')
 })
 
 ipcMain.on('say-pause-backup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('pause-backup', '')
 })
 
 ipcMain.on('say-resume-backup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('resume-backup', '')
 })
 
 ipcMain.on('say-status', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('status', '')
 })
 
 ipcMain.on('ask-recup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('initial-status', '')
 })
 
 ipcMain.on('say-new-backup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
   workerWindow.webContents.send('new-backup', arg)
 })
 
 //from workerwindow
 
 ipcMain.on('error', (event, arg) => {
+  if(!mainWindow.isDestroyed())
   mainWindow.webContents.send('error', ...arg)
 })
 
@@ -52,29 +60,115 @@ ipcMain.on('folder-error', (event, arg) => {
 
 ipcMain.on('log', (event, arg) => {
   saveLog(arg)
+  if(!mainWindow.isDestroyed())
   mainWindow.webContents.send('log', arg)
 })
 
 ipcMain.on('status-reply', (event, arg) => {
+  if(!mainWindow.isDestroyed())
   mainWindow.webContents.send('status', arg)
 })
 
 ipcMain.on('initial-status-reply', (event, arg) => {
+  if(!mainWindow.isDestroyed())
   mainWindow.webContents.send('config', arg)
 })
 
 ipcMain.on('new-backup-end', (event, arg) => {
+  if(!mainWindow.isDestroyed())
   mainWindow.webContents.send('new-backup-end', arg)
 })
 
+ipcMain.on('retray-backup-log', (event, arg) => {
+  saveLog(arg)
+  if(!folderErrorWindow.isDestroyed())
+  folderErrorWindow.webContents.send('retray-backup-log', arg)
+})
 
-let mainWindow = null, workerWindow = null, folderErrorWindow = null
+ipcMain.on('generic-error', (event, arg) => {
+  //TODO: Gestire l'errore
+  createGenericErrorWindow()
+})
+
+// for folderErrorWindwos
+ipcMain.on('open-app', (event, arg) => {
+  if (mainClosed) {        
+    createMainWindows()
+  }
+  if(mainWindow){
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    if(!mainWindow.isDestroyed())
+    mainWindow.focus()
+  }
+  if(workerWindow.isDestroyed()){
+    createWorkerWindows()
+  }
+
+  if (folderErrorWindow && !folderErrorWindow.isDestroyed())
+    folderErrorWindow.close()
+})
+
+ipcMain.on('save-change', (event, arg) => {
+  // if(folderErrorWindow) folderErrorWindow.close()
+  if(!workerWindow.isDestroyed())
+    workerWindow.webContents.send('upload-setting', '')
+  if(!mainWindow.isDestroyed())
+    mainWindow.webContents.send('upload-setting', '')
+})
+
+ipcMain.on('retray-backup', (event, arg) => {
+  if(!workerWindow.isDestroyed())
+  workerWindow.webContents.send('retray-backup', '')
+})
+
+// for genericError
+
+ipcMain.on('to-error-from-home', (event, arg) => {
+  if (mainWindow.isDestroyed()) {
+    createMainWindows()
+  }
+  else {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+  if (!genericErrorWindow.isDestroyed())
+    genericErrorWindow.close()
+})
+
+let mainWindow = null, workerWindow = null, folderErrorWindow = null, genericErrorWindow = null
 let mainClosed = true
 
 const createWindow = () => {  
   createMainWindows()
   createWorkerWindows()
-  createFolderErrorWindows() //TODO: just for try, DELETE IT 
+
+  let menu = Menu.buildFromTemplate([
+    {
+      label: 'Window',
+      submenu: [
+        { role: 'minimize' },
+        { role: 'close' },
+      ]
+    },
+    {
+      label: 'Zoom',
+      submenu: [
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { role: 'zoom' },
+        { role: 'togglefullscreen' },
+      ]
+    },
+    {
+      label: 'Reload',
+      submenu: [
+        { role: 'forceReload' },
+      ]
+    }
+  ]);
+
+  Menu.setApplicationMenu(menu);
 };
 
 const createMainWindows = () => {
@@ -126,6 +220,21 @@ const createFolderErrorWindows = () => {
   folderErrorWindow.loadFile(path.join(__dirname, 'client/folderError.html'))
 }
 
+const createGenericErrorWindow = () => {
+  genericErrorWindow = new BrowserWindow({
+    minWidth : 400,
+    minHeight : 250,
+    width: 400,
+    height: 250,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false
+    }
+  })
+  genericErrorWindow.loadFile(path.join(__dirname, 'client/genericError.html'))
+}
+
 const gotTheLock   = app.requestSingleInstanceLock()
 
 try{
@@ -168,7 +277,7 @@ try{
 }
 
 function showFolderError() {
-  if (folderErrorWindow) {
+  if (folderErrorWindow && !folderErrorWindow.isDestroyed()) {
     if (folderErrorWindow.isMinimized()) folderErrorWindow.restore()
     folderErrorWindow.focus()
   }
@@ -176,5 +285,10 @@ function showFolderError() {
 }
 
 function saveLog(log) {
-  backupData.addLog(log, {save:true})
+  try {
+    backupData.addLog(log, {save:true})
+  } catch (ex)
+  {
+    console.log(log);
+  }
 }
