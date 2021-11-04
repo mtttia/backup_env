@@ -51,7 +51,6 @@ ipcRenderer.on('new-backup', async (event, arg) => {
 })
 
 async function backup(arg) {
-  ipcRenderer.send('generic-error', '')
   if (existsSync(arg.SrcFolder) && existsSync(arg.DistFolder)) {
     let report = new Log();
     let today = new Date()
