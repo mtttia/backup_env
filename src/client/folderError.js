@@ -47,7 +47,6 @@ document.getElementById('btn-retray').addEventListener('click', (event, arg) => 
     document.getElementById('report').classList.add('d-none')
     document.getElementById('report-loading').classList.remove('d-none')
 })
-//TODO: inserisci cosa fare dopo il riprova
 ipcRenderer.on('retray-backup-log', (event, arg) => {
     document.getElementById('report-loading').classList.add('d-none')
     document.getElementById('report').classList.remove('d-none')

@@ -85,8 +85,7 @@ ipcMain.on('retray-backup-log', (event, arg) => {
   folderErrorWindow.webContents.send('retray-backup-log', arg)
 })
 
-ipcMain.on('generic-error', (event, arg) => {
-  //TODO: Gestire l'errore
+ipcMain.on('generic-error', (event, arg) => {  
   createGenericErrorWindow()
 })
 
@@ -138,7 +137,7 @@ ipcMain.on('to-error-from-home', (event, arg) => {
 let mainWindow = null, workerWindow = null, folderErrorWindow = null, genericErrorWindow = null
 let mainClosed = true
 
-const createWindow = () => {  
+const createWindow = () => {
   createMainWindows()
   createWorkerWindows()
 
