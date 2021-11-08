@@ -7,18 +7,20 @@ class Setting{
     CronPattern; // "* * * * *" -> see documentation here https://www.npmjs.com/package/node-cron+ù
     SrcFolder;
     DistFolder;
+    WinBakcup;
 
-    constructor(cronPattern, srcFolder, distFolder, save = false){
+    constructor(cronPattern, srcFolder, distFolder, winBakcup,save = false){
         this.CronPattern = cronPattern
         this.SrcFolder = srcFolder
         this.DistFolder = distFolder
+        this.WinBakcup = winBakcup
         if (save)
             this.save()
     }
 
     static fromJson(obj) {
         if(obj.CronPattern && obj.SrcFolder && obj.DistFolder)
-            return new Setting(obj.CronPattern, obj.SrcFolder, obj.DistFolder, false)
+            return new Setting(obj.CronPattern, obj.SrcFolder, obj.DistFolder, obj.WinBakcup, false)
         else
             throw new Error('Object is not a Setting object')
     }

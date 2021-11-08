@@ -1,3 +1,4 @@
+const { main } = require('@popperjs/core');
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const BackupData = require('./class/backupData')
@@ -188,6 +189,7 @@ const createMainWindows = () => {
   mainWindow.addListener('closed', (e)=>{
     mainClosed = true
   })
+
 }
 
 const createWorkerWindows = () => {

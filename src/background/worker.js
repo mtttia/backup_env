@@ -4,6 +4,7 @@ const { existsSync } = require('fs')
 const { ipcRenderer } = require('electron')
 const Setting = require('./../class/setting')
 const Log = require('./../class/log')
+const { exec } = require('child_process')
 
 let setting = null
 let task = null
@@ -59,7 +60,12 @@ async function backup(arg) {
     report.SrcFolder = arg.SrcFolder
     report.StartHour = `${today.getHours()}:${today.getMinutes()}`
     try {      
-      await copyDir(arg.SrcFolder, arg.DistFolder)
+      if (setting.WinBakcup) {
+        await backupWindows(arg.SrcFolder, arg.DistFolder) 
+      }
+      else {
+        await copyDir(arg.SrcFolder, arg.DistFolder)       
+      }      
       let now = new Date()
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.Description = "" 
@@ -92,6 +98,15 @@ async function backup(arg) {
   }
 }
 
+async function backupWindows(src, dist) {
+  try {
+    alert('windows backup done')
+    await exec(`xcopy ${src} ${dist} /Q /C /R /Y /E /H /I`)
+  } catch (ex) {
+    throw ex
+  }
+}
+
 async function cronFunction() {  
   if (pause) return
   
@@ -105,7 +120,12 @@ async function cronFunction() {
     report.SrcFolder = setting.SrcFolder
     report.StartHour = `${today.getHours()}:${today.getMinutes()}`
     try {      
-      await copyDir(setting.SrcFolder, setting.DistFolder)
+      if (setting.WinBakcup) {
+        await backupWindows(setting.SrcFolder, setting.DistFolder)
+      }
+      else {
+        await copyDir(setting.SrcFolder, setting.DistFolder)
+      }    
       let now = new Date()
       report.EndHour = `${now.getHours()}:${now.getMinutes()}`
       report.Description = "" 

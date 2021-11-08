@@ -88,7 +88,7 @@ function initializeSetting() {
 
     const pattern = `${minutes} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`
     console.log(pattern)
-    setting = new Setting(pattern, srcFolder, distFolder, true)
+    setting = new Setting(pattern, srcFolder, distFolder, false, true)
     //run real app
     document.getElementById('welcome').classList.add('d-none')
     document.getElementById('home').classList.remove('d-none')
@@ -139,6 +139,13 @@ ipcRenderer.on('log', (event, arg) => {
     populateStateModal()
 })
 
+document.getElementById('btnChangeBackupType').addEventListener('click', () => {
+    setting.WinBakcup = document.getElementById('windowsBackup').checked
+    setting.save()
+    ipcRenderer.send('say-upload-setting', '')
+    populateStateModal()
+})
+
 function populateStateModal() {
     //setting data
     document.getElementById('sm-type').innerText = "Tipo: " + type
@@ -146,6 +153,18 @@ function populateStateModal() {
     document.getElementById('sm-day').innerText = "Giorno: " + myday
     document.getElementById('sm-time').innerText = `Orario: ${time.hour}:${time.minutes}`
     document.getElementById('sm-folder').innerHTML = `Sorgente: ${setting.SrcFolder} <br>Destinazione: ${setting.DistFolder}`
+
+    document.getElementById('normalBackup').checked = !setting.WinBakcup
+    document.getElementById('windowsBackup').checked = setting.WinBakcup
+
+    if (setting.WinBakcup) {
+        document.getElementById('txtwindowsBackup').style.color = '#006d77'
+        document.getElementById('txtnormalBackup').style.color = '#000'
+    }
+    else {
+        document.getElementById('txtwindowsBackup').style.color = '#000'
+        document.getElementById('txtnormalBackup').style.color = '#006d77'
+    }
 
     //logs data
     let html = ''
